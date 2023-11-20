@@ -1,0 +1,95 @@
+.home {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #010101;
+  color: #9b9dad;
+
+  .amount {
+    min-width: 100px;
+    min-height: 100px;
+    position: relative;
+    margin-bottom: 50px;
+
+    &__content {
+      height: 100%;
+      display: flex;
+      gap: 10px;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    &__value {
+      font-size: 30px;
+    }
+
+    &__icon {
+      width: 30px;
+      height: 30px;
+    }
+
+    &__corner {
+      position: absolute;
+      width: 50%;
+      height: 50%;
+    }
+
+    &__top-left-corner {
+      top: 0;
+      border-top: 3px solid red;
+      border-left: 3px solid red;
+      border-top-left-radius: 15px;
+    }
+
+    &__top-right-corner {
+      top: 0;
+      left: 50%;
+      border-top: 3px solid blue;
+      border-right: 3px solid blue;
+      border-top-right-radius: 15px;
+    }
+
+    &__bottom-left-corner {
+      top: 50%;
+      border-bottom: 3px solid green;
+      border-left: 3px solid green;
+      border-bottom-left-radius: 15px;
+    }
+
+    &__bottom-right-corner {
+      top: 50%;
+      left: 50%;
+      border-bottom: 3px solid yellow;
+      border-right: 3px solid yellow;
+      border-bottom-right-radius: 15px;
+    }
+  }
+
+  .list {
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    overflow: scroll;
+    margin-bottom: 100px;
+  }
+
+  .add-box {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 10px;
+    cursor: pointer;
+    background-color: #9b9dad;
+    border-radius: 50px;
+    display: flex;
+
+    .icon {
+      width: 40px;
+      height: 40px;
+    }
+  }
+}

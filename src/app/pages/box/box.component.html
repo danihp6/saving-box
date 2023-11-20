@@ -1,0 +1,103 @@
+<div class="box">
+  <div class="box__header">
+    <img class="back icon icon__grey" src="assets/icons/back.svg" alt="" routerLink="..">
+    <h1><img class="icon icon__grey" src="assets/icons/{{ box.type }}.svg" alt="">{{ box.title }}</h1>
+  </div>
+  <div class="amount" (click)="openfinances()">
+    <div class="amount__content">
+      <div class="amount__values">
+        <span class="amount__value">{{ box.savings }}</span>
+        <span class="amount__incomings">+{{ box.incomings }}/mes</span>
+      </div>
+      <img class="amount__icon icon icon__grey" src="assets/icons/saving-box.svg">
+    </div>
+    <div class="amount__corner amount__top-left-corner"></div>
+    <div class="amount__corner amount__top-right-corner"></div>
+    <div class="amount__corner amount__bottom-left-corner"></div>
+    <div class="amount__corner amount__bottom-right-corner"></div>
+  </div>
+  <div class="history-button" (click)="changeMode()">
+    <img class="icon" src="assets/icons/history.svg" alt="">
+  </div>
+  <div *ngIf="mode === 'items'" style="width: 100%; height: 100%;" cdkDropListGroup>
+    <div id="list" cdkDropList class="list" (cdkDropListDropped)="drop($event)" #list>
+      <div
+        *ngFor="let item of items"
+        class="item"
+        cdkDrag
+        (cdkDragStarted)="dragging = true"
+        (cdkDragEnded)="dragging = false"
+      >
+        <input class="item__input" type="text" [(ngModel)]="item.name">
+        <input class="item__amount" type="number" [(ngModel)]="item.amount">
+      </div>
+      <div (click)="newItem()">+ new item</div>
+    </div>
+    <div
+      class="actions"
+      [style.opacity]="dragging ? 'unset' : 0"
+    >
+      <div
+        id="delete"
+        class="action"
+        cdkDropList
+        (cdkDropListDropped)="drop($event)"
+      >
+        <img class="icon" src="assets/icons/delete.svg" alt="">
+      </div>
+      <div
+        id="purchased"
+        class="action"
+        cdkDropList
+        (cdkDropListDropped)="drop($event)"
+      >
+        <img class="icon" src="assets/icons/purchase.svg" alt="">
+      </div>
+    </div>
+  </div>
+  <div *ngIf="mode === 'history'">
+    <div class="history">
+      <div
+        *ngFor="let item of purchased"
+        class="item"
+      >
+        <input class="item__input" type="text" [(ngModel)]="item.name">
+        <input class="item__amount" type="number" [(ngModel)]="item.amount">
+      </div>
+    </div>
+  </div>
+  <div
+    class="finances"
+    [style.height.px]="financesOpened ? 250 : 0"
+    [style.opacity]="financesOpened ? 'unset' : 0"
+    [style.background-color]="financesOpened ? '#707070' : 'transparent'"
+  >
+    <div class="toogle" (click)="openfinances()">
+      <img class="toogle__icon icon" src="assets/icons/saving-box.svg">
+    </div>
+    <div class="finances__content">
+      <div class="transaction">
+        <label class="transaction__label" for="transaction">Transaction</label>
+        <span>
+          <button (click)="transaction('-')">-</button>
+          <input
+            id="transaction"
+            type="number"
+            [(ngModel)]="transactionValue"
+          >
+          <button (click)="transaction('+')">+</button>
+        </span>
+      </div>
+      <div class="incomings">
+        <label class="incomings__label" for="incomings">Incomings</label>
+        <span>
+          <input
+            id="incomings"
+            type="number"
+            [(ngModel)]="box.incomings"
+          >
+        </span>
+      </div>
+    </div>
+  </div>
+</div>

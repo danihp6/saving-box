@@ -1,0 +1,29 @@
+<div
+  [ngClass]="{
+    'box--selected': selected
+  }"
+  class="box"
+  (click)="!selected ? open() : null"
+>
+  <div class="box__header">
+    <img
+      *ngIf="!selected"
+      class="box__icon icon icon__grey"
+      src="assets/icons/{{ box.type }}.svg"
+    />
+    <img
+      *ngIf="selected"
+      class="box__icon icon"
+      src="assets/icons/opened-box.svg"
+      (click)="selected ? close() : null"
+    >
+    <input type="text" [(ngModel)]="box.title" [readonly]="!selected" />
+  </div>
+  <div *ngIf="selected" class="box__content">
+    <div class="box__amount">
+      <img class="box__amount__icon icon" src="assets/icons/saving-box.svg" />
+      <span class="box__amount__value">{{ box.savings }}</span>
+    </div>
+    <img class="box__open icon" src="assets/icons/next.svg" [routerLink]="['/boxes', '0']">
+  </div>
+</div>
