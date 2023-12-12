@@ -64,5 +64,6 @@ jobs:
       - name: 🚀 AWS CDK deploy
         run: |
           cd cdk
+          npm ci
           npm run bootstrap
           npm run deploy
