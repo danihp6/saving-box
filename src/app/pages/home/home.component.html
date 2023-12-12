@@ -1,8 +1,11 @@
 <div class="home">
-  <h1>SAVINGS BOX</h1>
+  <h1 class="title">SAVING BOX</h1>
   <div class="amount">
     <div class="amount__content">
-      <span class="amount__value">{{ savings }}</span>
+      <div class="amount__values">
+        <span class="amount__value">{{ savings }}</span>
+        <span class="amount__incomings">+{{ incomings }}/mes</span>
+      </div>
       <img class="amount__icon icon icon__grey" src="assets/icons/saving-box.svg">
     </div>
     <div class="amount__corner amount__top-left-corner"></div>
@@ -16,10 +19,12 @@
       [box]="box"
       [selected]="selectedBox === index"
       (select)="selectBox(index)"
+      (delete)="deleteBox(index, box)"
+      (edit)="editBox(index, box)"
     >
     </app-box>
   </div>
   <div class="add-box" (click)="addBox()">
-    <img class="icon" src="assets/icons/add-color.svg" alt="">
+    <img class="icon" src="assets/icons/add-color.svg">
   </div>
 </div>

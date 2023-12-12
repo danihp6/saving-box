@@ -17,13 +17,19 @@
       src="assets/icons/opened-box.svg"
       (click)="selected ? close() : null"
     >
-    <input type="text" [(ngModel)]="box.title" [readonly]="!selected" />
+    <input
+      type="text"
+      [(ngModel)]="box.title"
+      (blur)="editTitle()"
+      [readonly]="!selected"
+    />
   </div>
   <div *ngIf="selected" class="box__content">
     <div class="box__amount">
       <img class="box__amount__icon icon" src="assets/icons/saving-box.svg" />
-      <span class="box__amount__value">{{ box.savings }}</span>
+      <span class="box__amount__value">{{ box.savings ?? 0 }}</span>
     </div>
-    <img class="box__open icon" src="assets/icons/next.svg" [routerLink]="['/boxes', '0']">
+    <img class="box__delete icon" src="assets/icons/delete.svg" (click)="deleteBox()">
+    <img class="box__open icon" src="assets/icons/next.svg" (click)="openBox()">
   </div>
 </div>

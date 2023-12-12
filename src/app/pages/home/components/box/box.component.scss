@@ -50,8 +50,15 @@
     }
   }
 
+  &__delete {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 4px;
+    cursor: pointer;
+  }
+
   &__open {
-    display: flex;
     position: absolute;
     bottom: 0;
     right: 0;

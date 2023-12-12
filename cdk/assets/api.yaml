@@ -1,0 +1,398 @@
+openapi: 3.0.3
+info:
+  title: saving box api
+paths:
+  /boxes:
+    options:
+      summary: CORS support
+      description: Enable CORS
+      tags:
+        - CORS
+      responses:
+        '200':
+          description: Default response for CORS method
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+            Access-Control-Allow-Methods:
+              schema:
+                type: string
+            Access-Control-Allow-Headers:
+              schema:
+                type: string
+          content: {}
+      x-amazon-apigateway-integration:
+        type: mock
+        requestTemplates:
+          application/json: |
+            {
+              "statusCode" : 200
+            }
+        responses:
+          default:
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Headers: '''Content-Type,X-Amz-Date,Authorization,X-Api-Key'''
+              method.response.header.Access-Control-Allow-Methods: '''*'''
+              method.response.header.Access-Control-Allow-Origin: '''*'''
+            responseTemplates:
+              application/json: |
+                {}
+    post:
+      summary: Add a box
+      parameters:
+        - name: Accept-Language
+          in: header
+          required: true
+          schema:
+            type: string
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddBoxResponse'
+              example: >
+                  {
+                    "box": {
+                    }
+                  }
+        '204':
+          description: No content
+        '400':
+          $ref: '#/components/responses/RequestError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/UncontrolledError'
+      x-amazon-apigateway-integration:
+        uri: arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:${AWS::Partition}:lambda:${AWS::Region}:${AWS::AccountId}:function:${stageVariables.appName}-add-box-${stageVariables.env}/invocations
+        passthroughBehavior: when_no_match
+        httpMethod: POST
+        type: aws_proxy
+    delete:
+      summary: Delete a box
+      parameters:
+        - name: Accept-Language
+          in: header
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteBoxResponse'
+              example: >
+                  {
+                    "id": ""
+                  }
+        '204':
+          description: No content
+        '400':
+          $ref: '#/components/responses/RequestError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/UncontrolledError'
+      x-amazon-apigateway-integration:
+        uri: arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:${AWS::Partition}:lambda:${AWS::Region}:${AWS::AccountId}:function:${stageVariables.appName}-delete-box-${stageVariables.env}/invocations
+        passthroughBehavior: when_no_match
+        httpMethod: POST
+        type: aws_proxy
+    put:
+      summary: Update a box
+      parameters:
+        - name: Accept-Language
+          in: header
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateBoxResponse'
+              example: >
+                  {
+                    "box": {}
+                  }
+        '204':
+          description: No content
+        '400':
+          $ref: '#/components/responses/RequestError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/UncontrolledError'
+      x-amazon-apigateway-integration:
+        uri: arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:${AWS::Partition}:lambda:${AWS::Region}:${AWS::AccountId}:function:${stageVariables.appName}-update-box-${stageVariables.env}/invocations
+        passthroughBehavior: when_no_match
+        httpMethod: POST
+        type: aws_proxy
+  /boxes/{owner}:
+    options:
+      summary: CORS support
+      description: Enable CORS
+      tags:
+        - CORS
+      responses:
+        '200':
+          description: Default response for CORS method
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+            Access-Control-Allow-Methods:
+              schema:
+                type: string
+            Access-Control-Allow-Headers:
+              schema:
+                type: string
+          content: {}
+      x-amazon-apigateway-integration:
+        type: mock
+        requestTemplates:
+          application/json: |
+            {
+              "statusCode" : 200
+            }
+        responses:
+          default:
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Headers: '''Content-Type,X-Amz-Date,Authorization,X-Api-Key'''
+              method.response.header.Access-Control-Allow-Methods: '''*'''
+              method.response.header.Access-Control-Allow-Origin: '''*'''
+            responseTemplates:
+              application/json: |
+                {}
+    get:
+      summary: Get boxes
+      parameters:
+        - name: Accept-Language
+          in: header
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetBoxesResponse'
+              example: >
+                  {
+                    "box": {
+                    }
+                  }
+        '204':
+          description: No content
+        '400':
+          $ref: '#/components/responses/RequestError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/UncontrolledError'
+      x-amazon-apigateway-integration:
+        uri: arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:${AWS::Partition}:lambda:${AWS::Region}:${AWS::AccountId}:function:${stageVariables.appName}-get-boxes-${stageVariables.env}/invocations
+        passthroughBehavior: when_no_match
+        httpMethod: POST
+        type: aws_proxy
+  /boxes/{owner}/{id}:
+    options:
+      summary: CORS support
+      description: Enable CORS
+      tags:
+        - CORS
+      responses:
+        '200':
+          description: Default response for CORS method
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+            Access-Control-Allow-Methods:
+              schema:
+                type: string
+            Access-Control-Allow-Headers:
+              schema:
+                type: string
+          content: {}
+      x-amazon-apigateway-integration:
+        type: mock
+        requestTemplates:
+          application/json: |
+            {
+              "statusCode" : 200
+            }
+        responses:
+          default:
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Headers: '''Content-Type,X-Amz-Date,Authorization,X-Api-Key'''
+              method.response.header.Access-Control-Allow-Methods: '''*'''
+              method.response.header.Access-Control-Allow-Origin: '''*'''
+            responseTemplates:
+              application/json: |
+                {}
+    get:
+      summary: Get box
+      parameters:
+        - name: Accept-Language
+          in: header
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetBoxResponse'
+              example: >
+                  {
+                    "box": {
+                    }
+                  }
+        '204':
+          description: No content
+        '400':
+          $ref: '#/components/responses/RequestError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/UncontrolledError'
+      x-amazon-apigateway-integration:
+        uri: arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:${AWS::Partition}:lambda:${AWS::Region}:${AWS::AccountId}:function:${stageVariables.appName}-get-box-${stageVariables.env}/invocations
+        passthroughBehavior: when_no_match
+        httpMethod: POST
+        type: aws_proxy
+components:
+  # securitySchemes:
+  #   tokenAuthorizer:
+  #     type: apiKey
+  #     name: Authorization
+  #     description: Security lambda authorizer
+  #     in: header
+  #     x-amazon-apigateway-authorizer:
+  #       identitySource: method.request.header.Authorization
+  #       authorizerUri: arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:${AWS::Partition}:lambda:${AWS::Region}:${AWS::AccountId}:function:${stageVariables.appName}-auth-${stageVariables.env}/invocations
+  #       type: token
+  #       authorizerResultTtlInSeconds: 2
+  #     x-amazon-apigateway-authtype: Custom scheme with corporate claims
+  schemas:
+    Error:
+      required:
+        - code
+        - message
+        - type
+        - application
+        - timestamp
+        - errors
+      properties:
+        code:
+          description: Error code
+          example: '403'
+          type: string
+        message:
+          description: Error description
+          example: Internal error in the service
+          type: string
+        type:
+          description: Error type
+          example: Null pointer
+          type: string
+        context:
+          description: Error context
+          example: Process query action
+          type: string
+        exception:
+          description: Exception
+          example: NullPointerException
+          type: string
+        component:
+          description: Error component
+          example: ProcessImpl
+          type: string
+        application:
+          description: Error application
+          example: Process_Backend
+          type: string
+        timestamp:
+          description: Error time
+          example: '2019-01-13T18:27:41.511Z'
+          type: string
+          format: date-time
+        errors:
+          description: Error list
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorComponent'
+    ErrorComponent:
+      required:
+        - code
+      properties:
+        code:
+          description: Error code
+          example: '403'
+          type: string
+        message:
+          description: Error message
+          example: Internal error
+          type: string
+    AddBoxResponse:
+      type: object
+      properties:
+        box:
+          type: object
+    DeleteBoxResponse:
+      type: object
+      properties:
+        id:
+          type: string
+    UpdateBoxResponse:
+      type: object
+      properties:
+        box:
+          type: object
+    GetBoxResponse:
+      type: object
+      properties:
+        box:
+          type: object
+    GetBoxesResponse:
+      type: object
+      properties:
+        boxes:
+          type: array
+          items:
+            type: object

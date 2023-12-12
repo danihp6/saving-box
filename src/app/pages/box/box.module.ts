@@ -5,6 +5,7 @@ import { SharedModule } from 'src/app/shared/shared.module';
 import { FormsModule } from '@angular/forms';
 import { BoxComponent } from './box.component';
 import { DragDropModule } from '@angular/cdk/drag-drop';
+import { NgxLongPress2Module } from 'ngx-long-press2';
 
 @NgModule({
   declarations: [BoxComponent],
@@ -12,6 +13,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
     CommonModule,
     FormsModule,
     DragDropModule,
+    NgxLongPress2Module,
     RouterModule.forChild([
       {
         path: '',

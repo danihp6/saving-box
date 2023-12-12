@@ -1,13 +1,14 @@
 <div class="box">
   <div class="box__header">
-    <img class="back icon icon__grey" src="assets/icons/back.svg" alt="" routerLink="..">
-    <h1><img class="icon icon__grey" src="assets/icons/{{ box.type }}.svg" alt="">{{ box.title }}</h1>
+    <img class="back icon icon__grey" src="assets/icons/back.svg" alt="" (click)="goBack()">
+    <img class="icon icon__grey" src="assets/icons/{{ box.type }}.svg" alt="">
+    <h1 class="title">{{ box.title }}</h1>
   </div>
-  <div class="amount" (click)="openfinances()">
+  <div class="amount" ngxLongPress2 (onLongPress)="openfinances()">
     <div class="amount__content">
       <div class="amount__values">
-        <span class="amount__value">{{ box.savings }}</span>
-        <span class="amount__incomings">+{{ box.incomings }}/mes</span>
+        <span class="amount__value">{{ box.savings ?? 0 }}</span>
+        <span class="amount__incomings">+{{ box.incomings ?? 0 }}/mes</span>
       </div>
       <img class="amount__icon icon icon__grey" src="assets/icons/saving-box.svg">
     </div>
@@ -16,53 +17,71 @@
     <div class="amount__corner amount__bottom-left-corner"></div>
     <div class="amount__corner amount__bottom-right-corner"></div>
   </div>
-  <div class="history-button" (click)="changeMode()">
+  <div *ngIf="box.purchasedItems" class="purchased-button" (click)="changeMode()">
     <img class="icon" src="assets/icons/history.svg" alt="">
   </div>
-  <div *ngIf="mode === 'items'" style="width: 100%; height: 100%;" cdkDropListGroup>
+  <div *ngIf="mode === 'shopping'" style="width: 100%; height: 100%;" cdkDropListGroup>
     <div id="list" cdkDropList class="list" (cdkDropListDropped)="drop($event)" #list>
       <div
-        *ngFor="let item of items"
+        *ngFor="let item of box.shoppingItems"
         class="item"
         cdkDrag
         (cdkDragStarted)="dragging = true"
-        (cdkDragEnded)="dragging = false"
+        (cdkDragDropped)="dragging = false"
       >
-        <input class="item__input" type="text" [(ngModel)]="item.name">
-        <input class="item__amount" type="number" [(ngModel)]="item.amount">
+        <input class="item__input" type="text" [(ngModel)]="item.name" (blur)="editItem()">
+        <span class="item__currency">€</span>
+        <input class="item__amount" type="number" [(ngModel)]="item.amount" (blur)="editItem()">
       </div>
-      <div (click)="newItem()">+ new item</div>
     </div>
     <div
-      class="actions"
-      [style.opacity]="dragging ? 'unset' : 0"
+      *ngIf="!dragging"
+      class="new-item"
+      (click)="newItem()"
     >
-      <div
-        id="delete"
-        class="action"
-        cdkDropList
-        (cdkDropListDropped)="drop($event)"
-      >
-        <img class="icon" src="assets/icons/delete.svg" alt="">
-      </div>
-      <div
-        id="purchased"
-        class="action"
-        cdkDropList
-        (cdkDropListDropped)="drop($event)"
-      >
-        <img class="icon" src="assets/icons/purchase.svg" alt="">
-      </div>
+      <img class="icon" src="assets/icons/add.svg" alt="">
+    </div>
+    <div
+      id="delete"
+      class="action-zone delete"
+      cdkDropList
+      (cdkDropListDropped)="drop($event)"
+      [style.opacity]="dragging ? 1 : 0"
+      [style.pointer-events]="dragging ? 'all' : 'none'"
+    >
+      <img class="icon" src="assets/icons/delete.svg" alt="">
+    </div>
+    <div
+      id="purchase"
+      class="action-zone purchase"
+      cdkDropList
+      (cdkDropListDropped)="drop($event)"
+      [style.opacity]="dragging ? 1 : 0"
+      [style.pointer-events]="dragging ? 'all' : 'none'"
+    >
+      <img class="icon" src="assets/icons/purchase.svg" alt="">
     </div>
   </div>
-  <div *ngIf="mode === 'history'">
-    <div class="history">
-      <div
-        *ngFor="let item of purchased"
-        class="item"
-      >
-        <input class="item__input" type="text" [(ngModel)]="item.name">
-        <input class="item__amount" type="number" [(ngModel)]="item.amount">
+  <div class="purchased" *ngIf="mode === 'purchased'">
+    <div
+      *ngFor="let items of dateItems()"
+      class="dateItems"
+    >
+      <div class="date">
+        <ng-container *ngIf="items.date.getFullYear() === now.getFullYear() && items.date.getMonth() === now.getMonth()">
+          {{ items.date | date:'d MMMM yyyy' }}
+        </ng-container>
+        <ng-container *ngIf="items.date.getFullYear() === now.getFullYear() && items.date.getMonth() !== now.getMonth()">
+          {{ items.date | date:'MMMM' }}
+        </ng-container>
+        <ng-container *ngIf="items.date.getFullYear() !== now.getFullYear()">
+          {{ items.date | date:'YYYY' }}
+        </ng-container>
+      </div>
+      <div *ngFor="let item of items.items">
+        <span class="item__name">{{ item.name }}</span>
+        <span class="item__currency">€</span>
+        <span class="item__amount">{{ item.amount }}</span>
       </div>
     </div>
   </div>
@@ -71,8 +90,9 @@
     [style.height.px]="financesOpened ? 250 : 0"
     [style.opacity]="financesOpened ? 'unset' : 0"
     [style.background-color]="financesOpened ? '#707070' : 'transparent'"
+    [style.pointer-events]="financesOpened ? 'all' : 'none'"
   >
-    <div class="toogle" (click)="openfinances()">
+    <div class="toogle" [style.opacity]="financesOpened ? 'unset' : 0" (click)="openfinances()">
       <img class="toogle__icon icon" src="assets/icons/saving-box.svg">
     </div>
     <div class="finances__content">
@@ -95,6 +115,7 @@
             id="incomings"
             type="number"
             [(ngModel)]="box.incomings"
+            (blur)="editIncomings()"
           >
         </span>
       </div>

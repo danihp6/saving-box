@@ -1,5 +1,7 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { SavingBox } from 'src/app/core/models/SavingBox';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Box } from 'src/app/core/models/SavingBox';
+import { Observable, Subject, debounce, interval } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-box',
@@ -7,15 +9,18 @@ import { SavingBox } from 'src/app/core/models/SavingBox';
   styleUrls: ['./box.component.scss']
 })
 export class BoxComponent {
-  @Input() box: SavingBox = {
+  @Input() box: Box = {
+    id: '',
+    owner: '',
     type: 'box',
-    title: '',
-    savings: 0,
-    incomings: 0
+    title: ''
   };
   @Input() selected = false;
   @Output() select = new EventEmitter();
-  editing = false;
+  @Output() edit = new EventEmitter();
+  @Output() delete = new EventEmitter();
+
+  constructor(private router: Router) {}
 
   open() {
     this.select.emit();
@@ -25,5 +30,17 @@ export class BoxComponent {
     setTimeout(() => {
       this.select.emit();
     });
+  }
+
+  editTitle() {
+    this.edit.next(this.box);
+  }
+
+  deleteBox() {
+    this.delete.emit();
+  }
+
+  openBox() {
+    this.router.navigate(['/boxes', this.box.id]);
   }
 }

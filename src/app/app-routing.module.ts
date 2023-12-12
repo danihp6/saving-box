@@ -7,7 +7,7 @@ const routes: Routes = [
     loadChildren: () => import('./pages/home/home.module').then(m => m.HomeModule)
   },
   {
-    path: 'boxes/:title',
+    path: 'boxes/:id',
     loadChildren: () => import('./pages/box/box.module').then(m => m.BoxModule)
   },
   { path: '**', redirectTo: '' }
