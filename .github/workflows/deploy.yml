@@ -1,0 +1,68 @@
+name: Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      env:
+        type: choice
+        description: 'Deploy environment'
+        required: true
+        options:
+          - DEV
+
+env:
+  ENV:                   ${{ github.event.inputs.env }}
+  RELEASE_VERSION:       ${{ github.ref_name }}
+  REF_TYPE:              ${{ github.ref_type }}
+  GITHUB_TOKEN:          ${{ secrets.GITHUB_TOKEN }}
+  GH_TOKEN:              ${{ secrets.GH_TOKEN }}
+  AWS_ACCOUNT:           '049735850683'
+  AWS_REGION:            'eu-west-1'
+  CACHE_NAME:            'npm-cache'
+  RED:                   '\033[1;91m'
+  GREEN:                 '\033[1;92m'
+  BLUE:                  '\033[1;94m'
+  NC:                    '\033[0m'
+
+permissions: write-all
+
+jobs:
+  setup:
+    name: 🚀 Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Exit if is not a release
+        if: env.REF_TYPE != 'tag'
+        run: |
+          echo -e "${{ env.RED }}[Error] ${{ env.NC }}You must select a tag not a branch"
+          exit 1
+      - name: Checkout project
+        uses: actions/checkout@v3
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - name: Get cache
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-build-${{ env.CACHE_NAME }}-${{ hashFiles('**/package-lock.json') }}
+      - name: 🔧 Setup
+        run: |
+          npm ci
+      - name: ⬇️ Download release
+        run: |
+          gh release download ${{ env.RELEASE_VERSION }}
+          unzip dist.zip
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: arn:aws:iam::${{ env.AWS_ACCOUNT }}:role/github
+          role-skip-session-tagging: true
+          aws-region: ${{ env.AWS_REGION }}
+      - name: 🚀 AWS CDK deploy
+        run: |
+          cd cdk
+          npm run bootstrap
+          npm run deploy
